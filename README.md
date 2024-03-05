@@ -1,6 +1,7 @@
 # Проектная работа "Веб-ларек"
 
 Стек: HTML, SCSS, TS, Webpack
+Паттерн программирования: MVP
 
 Структура проекта:
 - src/ — исходные файлы проекта
@@ -97,7 +98,7 @@ export interface IAppState {
 Интерфейс для ошибок формы.
 type FormErrors = Partial<Record<keyof IOrder, string>>;
 
-## Компоненты представления
+## Компоненты представления(Presenter)
 
 #Класс Api — базовый класс 
 
@@ -122,3 +123,41 @@ interface ILarekAPI {
 Имеет методы интерфейса ILarekAPI.
 
 #Класс Event Emitter 
+
+## Модели данных(Model)
+![UML scheme](имя изображения в корне)
+
+#Класс Model — базовый абстрактный класс типа дженерик — принимает в переменной T тип данных. 
+Принимает в конструктор:
+1. data: Partial<T> — опциональные свойства данных.
+2. protected events: IEvents — защищенные события. 
+
+Имеет метод:
+emitChanges(event: string, payload?: object) — принимает как аргумент событие, и опциональный параметр данные.
+Метод нужен чтобы сообщить что произошло какое-то событие и изменить данные.
+
+
+#Класс LotItem — наследует класс Model.Нужен для создания обьктов лотов.
+Принимает в конструктор:
+1. data: Partial<ILotItem>
+Собственных методов не имеет.
+
+#Класс AppData наследует абстрактный класс Model и содержит методы для работы и изменения данных проекта.
+Принимает в конструктор:
+1. data: Partial<IAppState>
+
+Имеет методы:
+1. addLot(lot: IBasketItem):void - добавить лот в корзину.
+2. removeLot(id: string): void - удалить лот из корзины.
+3. clearOrder(): void - очистить данные из заказа.
+4. clearBasket(): void - очистить корзину после заказа.
+5. getTotal(): number - получить общую сумму заказа.
+6. setCatalog(items: LotItem[]): void - получить данные всех товаров.
+7. setBasket(): IBasketItem[] - получить список товаров в корзине.
+8. checkBasket(item: IBasketItem): boolean - проверить есть ли лот в корзине(для того чтобы сменить надпись на кнопке)
+9. setOrder(): void - получить данные для оформления заказа.
+10. setOrderPayField(value: PaymentMethod):void - передать в поле оплаты заказов выбранный пользователем вариант.
+11. setOrderFormField(field: keyof Pick<IOrder, 'address'  | 'email' | 'phone'  >, value: string ):void - передать в остальные поля форм заказов данные пользователя.
+12. checkValidation(): void - проверить прошли ли данные пользователя валидацию.
+13. validateDeliveryForm():boolean - валидация формы оплаты и доставки.
+14. validateContactsForm():boolean - валидация формы контактов.
