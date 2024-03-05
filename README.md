@@ -40,3 +40,60 @@ npm run build
 ```
 yarn build
 ```
+## Описание данных
+ 
+Интерфейс с данными для карточки с главной страницы.
+interface ILotItem {
+    id: string;
+    description: string;
+    image: string;
+    title: string;
+    category: string;
+    price: number | null;
+}
+
+Тип для товара в корзине.
+type BusketItem = Pick<LotItem, 'id' | 'title' | 'price'> 
+
+Интерфейс для данных отображенных в корзине, массив товаров и типы для данных заказа.
+interface Bucket {
+   items: BusketItem[];
+   order: IOrder;
+   itemIndex: number;
+   total: number;
+}
+
+Интерфейсы для формы заказа.
+interface IOrderForm {
+    email: string;
+    phone: string;
+    adress: string;
+    payment: PaymentMethod;
+}
+
+Интерфейс для заказа.
+interface IOrder extends IOrderForm { 
+    items: [];
+}
+
+Тип для выбора метода оплаты.
+type PaymentMethod = 'cash' | 'card'
+
+Интерфейс для попапа "Заказ оформлен".
+interface IOrderResult {
+    id: string;
+    total: number;
+}
+ 
+Интерфейс для всех данных компонентов приложения.
+export interface IAppState {
+    catalog: LotItem[];
+    basket: string[];
+    preview: string | null;
+    order: IOrder | null;
+}
+
+
+Интерфейс для ошибок формы.
+type FormErrors = Partial<Record<keyof IOrder, string>>;
+
