@@ -97,3 +97,28 @@ export interface IAppState {
 Интерфейс для ошибок формы.
 type FormErrors = Partial<Record<keyof IOrder, string>>;
 
+## Компоненты представления
+
+#Класс Api — базовый класс 
+
+Принимает в конструктор:
+1. baseUrl: string – базовый адрес 
+2. options: RequestInit = {} – свойства
+Имеет методы:
+
+
+#Класс WebLarekApi наследует класс Api и имплементирует интерфейс
+interface ILarekAPI {
+    getLotList: () => Promise<ILotItem[]> - получить каталог лотов.
+    getLotItem: (id: string) => Promise<ILotItem> - получить лот.
+    orderLots: (order: IOrder) => Promise<IOrderResult> - получить результат заказа.
+}
+
+Принимает в конструктор:
+1.cdn: string — каширование ссылок на изображения.
+2.baseUrl: string — базовый адрес.
+3.options?: RequestInit — 
+
+Имеет методы интерфейса ILarekAPI.
+
+#Класс Event Emitter 
