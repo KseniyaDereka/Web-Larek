@@ -101,7 +101,6 @@ type FormErrors = Partial<Record<keyof IOrder, string>>;
 ## Компоненты представления(Presenter)
 
 #Класс Api — базовый класс 
-
 Принимает в конструктор:
 1. baseUrl: string – базовый адрес 
 2. options: RequestInit = {} – свойства
@@ -125,7 +124,7 @@ interface ILarekAPI {
 #Класс Event Emitter 
 
 ## Модели данных(Model)
-![UML scheme](имя изображения в корне)
+![UML scheme](./UML_schemes/Model-scheme.png)
 
 #Класс Model — базовый абстрактный класс типа дженерик — принимает в переменной T тип данных. 
 Принимает в конструктор:
@@ -161,3 +160,15 @@ emitChanges(event: string, payload?: object) — принимает как ар�
 12. checkValidation(): void - проверить прошли ли данные пользователя валидацию.
 13. validateDeliveryForm():boolean - валидация формы оплаты и доставки.
 14. validateContactsForm():boolean - валидация формы контактов.
+
+
+## Компоненты отображения(View)
+![UML scheme](./UML_schemes/Model-scheme.png)
+
+#Класс View 
+
+#Класс Popup
+
+#Класс Page
+
+какие компонеты будут Popup, Card, Popup with preview, Basket, OrderFormDelivery, OrderFormContacts, OrderDone

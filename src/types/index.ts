@@ -1,6 +1,6 @@
 export interface ILotItem {
     id: string;
-    description: string;
+    description?: string;
     image: string;
     title: string;
     category: string;

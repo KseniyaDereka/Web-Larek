@@ -5,7 +5,7 @@ import { IEvents } from "./base/events";
 export class LotItem extends Model<ILotItem> {
     
     id: string;
-    description: string;
+    description?: string;
     image: string;
     title: string;
     category: string;
