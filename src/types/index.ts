@@ -45,3 +45,18 @@ export interface IAppState {
     preview: string | null;
     order: IOrder | null;
 }
+
+
+export type ApiListResponse<Type> = {
+    total: number,
+    items: Type[]
+};
+
+
+export const category: Record<string, string> =  {
+    "софт-скил": "_soft",
+    "другое": "_other",
+    "дополнительное": "_additional",
+    "кнопка": "_button",
+    "хард-скил": "_hard"
+}

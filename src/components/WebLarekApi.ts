@@ -1,5 +1,6 @@
 import { ILotItem, IOrder,IOrderResult  } from '../types/index';
-import { ApiListResponse, Api }  from './base/api';
+import { ApiListResponse  }  from '../types/index';
+import {  Api }  from './base/api';
 
 export interface ILarekAPI {
     getLotList: () => Promise<ILotItem[]>;
