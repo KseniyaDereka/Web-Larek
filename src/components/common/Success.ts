@@ -20,7 +20,7 @@ export class Success extends View<ISuccess> {
 
         if (actions?.onClick) {
             this._close.addEventListener('click', actions.onClick);
-            this._total.textContent = `Списано ${value} синапсов`
+            this._total.textContent = `Списано ${value} синапсов`;
         }
     }
     
