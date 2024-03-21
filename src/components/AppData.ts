@@ -2,6 +2,13 @@ import {Model} from "./base/Model";
 import { ILotItem, IOrder, FormErrors, IAppState, PaymentMethod, IBasketItem} from '../types/index'
 import { IEvents } from "./base/events";
 
+
+
+export type CatalogChangeEvent = {
+    catalog: LotItem[]
+};
+
+
 export class LotItem extends Model<ILotItem> {
     
     id: string;
@@ -23,7 +30,14 @@ export class AppState extends Model<IAppState> {
         total: 0,
         payment: 'card',
     };
+    preview: object;
     formErrors: FormErrors = {};
+
+    setPreview(item: LotItem) {
+        this.preview = item;
+        this.emitChanges('preview:changed', item);
+    }
+
 
     addLot(lot: IBasketItem):void{
     this.basket.push(lot);

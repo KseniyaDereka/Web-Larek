@@ -5,7 +5,7 @@ import { ensureElement } from '../utils/utils';
 interface ICardActions {
 	onClick: (event: MouseEvent) => void;
 }
-class BasketItem extends View<IBasketItem> {
+export class BasketItem extends View<IBasketItem> {
 	protected _title: HTMLElement;
 	protected _price: HTMLElement;
 	protected _button: HTMLButtonElement;

@@ -19,12 +19,12 @@ export class Page extends View<IPage> {
         super(container);
 
         this._counter = ensureElement<HTMLElement>('.header__basket-counter');
-        this._catalog = ensureElement<HTMLElement>('.catalog__items');
+        this._catalog = ensureElement<HTMLElement>('.gallery');
         this._wrapper = ensureElement<HTMLElement>('.page__wrapper');
         this._basket = ensureElement<HTMLElement>('.header__basket');
 
         this._basket.addEventListener('click', () => {
-            this.events.emit('bids:open');
+            this.events.emit('basket:open');
         });
     }
 

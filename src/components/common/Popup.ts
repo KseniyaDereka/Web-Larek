@@ -6,7 +6,7 @@ interface IModalData {
     content: HTMLElement;
 }
 
-export class Modal extends View<IModalData> {
+export class Popup extends View<IModalData> {
     protected _closeButton: HTMLButtonElement;
     protected _content: HTMLElement;
 

@@ -12,7 +12,7 @@ interface ICard extends ILotItem { button?: string}
 
 
 
-class Card extends View<ICard> {
+export class Card extends View<ICard> {
     protected _description?: HTMLElement;
     protected _image: HTMLImageElement;
     protected _title: HTMLElement;
@@ -34,6 +34,7 @@ class Card extends View<ICard> {
                 this._button.addEventListener('click', actions.onClick);
             } else {
                 container.addEventListener('click', actions.onClick);
+                
             }
         }
 
