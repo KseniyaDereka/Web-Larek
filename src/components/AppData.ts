@@ -41,12 +41,12 @@ export class AppState extends Model<IAppState> {
 
     addLot(lot: IBasketItem):void{
     this.basket.push(lot);
-    this.emitChanges('basketContent:changed');
+    this.emitChanges('basketAddContent:changed');
     }
 
     removeLot(id: string): void{
        this.basket = this.basket.filter((lot) => { lot.id !== id });
-       this.emitChanges('basketContent:changed');
+       this.emitChanges('basketRemoveContent:changed');
     }
 
 

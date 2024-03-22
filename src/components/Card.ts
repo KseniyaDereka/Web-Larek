@@ -25,13 +25,14 @@ export class Card extends View<ICard> {
         this._title = ensureElement<HTMLElement>(`.${blockName}__title`, container);
         this._image = ensureElement<HTMLImageElement>(`.${blockName}__image`, container);
         this._button = container.querySelector(`.${blockName}__button`);
-        this._description = container.querySelector(`.${blockName}__description`);
+        this._description = container.querySelector(`.${blockName}__text`);
         this._category = ensureElement<HTMLImageElement>(`.${blockName}__category`, container);
         this._price = ensureElement<HTMLElement>(`.${blockName}__price`, container);
 
        
             if (this._button) {
                 this._button.addEventListener('click', actions.onClick);
+                
             } else {
                 container.addEventListener('click', actions.onClick);
                 

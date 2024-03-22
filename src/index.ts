@@ -48,8 +48,8 @@ const order = new Order(cloneTemplate(orderTemplate), events);
 // Поймали событие, сделали что нужно
 
 // Изменились элементы каталога
-events.on<CatalogChangeEvent>('items:changed', () => {
-    page.catalog = appData.catalog.map(item => {
+events.on<CatalogChangeEvent>('items:changed', () => {  
+    page.catalog = appData.catalog.map(item => {   //для каждого обьекта товара из appdata создаем карточку
         const card = new Card('card', cloneTemplate(cardCatalogTemplate), {
             onClick: () => events.emit('card:select', item)
         });
@@ -64,6 +64,38 @@ events.on<CatalogChangeEvent>('items:changed', () => {
     page.counter = appData.setBasket().length;
 });
 
+// Открыть превью карточки
+events.on('card:select', (item: LotItem) => {
+    const showItem = (item: LotItem) => {
+        const preview = new Card('card', cloneTemplate(cardPreviewTemplate), {
+            onClick: () =>
+            events.emit('basketAddContent:changed', item),
+         });
+        modal.render({
+            content: preview.render({
+                title: item.title,
+                image: item.image,
+                description: item.description,
+                category: item.category,
+                price: item.price
+                
+                })
+            })
+    }
+  //получаем карточку для превью
+api.getLotItem(item.id)
+.then((result) => {
+    console.log(item);
+    showItem(item);
+})
+.catch(err => {
+    console.error(err);
+});
+
+});
+
+
+
 
 
 
@@ -74,3 +106,23 @@ api.getLotList()
     .catch(err => {
         console.error(err);
     });
+
+//открыть корзину
+
+events.on('basket:open', () => {
+    modal.render({
+        content: createElement<HTMLElement>('div', {}, [
+            basket.render()
+        ])
+    });
+});
+
+// Блокируем прокрутку страницы если открыта модалка
+events.on('modal:open', () => {
+    page.locked = true;
+});
+
+// ... и разблокируем
+events.on('modal:close', () => {
+    page.locked = false;
+});
