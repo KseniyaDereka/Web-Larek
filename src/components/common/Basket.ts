@@ -3,6 +3,7 @@ import { ensureElement, createElement } from "../../utils/utils";
 import { EventEmitter } from "../base/events";
 
 
+
 interface IBasketView {
     items: HTMLElement[];
     total: number;
@@ -11,7 +12,7 @@ interface IBasketView {
 export class Basket extends View<IBasketView> {
     protected _list: HTMLElement;
     protected _total: HTMLElement;
-    protected _button: HTMLElement;
+    protected _button: HTMLButtonElement;
 
     constructor(container: HTMLElement, protected events: EventEmitter) {
         super(container);
@@ -32,9 +33,10 @@ export class Basket extends View<IBasketView> {
     set items(items: HTMLElement[]) {
         if (items.length) {
             this._list.replaceChildren(...items);
+            
         } else {
             this._list.replaceChildren(createElement<HTMLParagraphElement>('p', {
-                textContent: 'Корзина пуста'
+                textContent: 'Тут так пусто...'
             }));
             this.setDisabled(this._button, false);
         }

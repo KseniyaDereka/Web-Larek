@@ -7,7 +7,9 @@ export interface ILotItem {
     price: number | null;
 }
 
-export type IBasketItem = Pick<ILotItem, 'id' | 'title' | 'price'> 
+export type IBasketItem = Pick<ILotItem, 'id' | 'title' | 'price'> & {
+    index?: number;
+}
  
 export interface Bucket {
    items:IBasketItem[];

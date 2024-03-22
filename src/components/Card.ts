@@ -68,5 +68,8 @@ export class Card extends View<ICard> {
     
     }
 
+    set button(value: string) { 
+        this.setText(this._button, value); 
+       }
 
 }

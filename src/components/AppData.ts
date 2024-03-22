@@ -41,12 +41,13 @@ export class AppState extends Model<IAppState> {
 
     addLot(lot: IBasketItem):void{
     this.basket.push(lot);
-    this.emitChanges('basketAddContent:changed');
+    this.emitChanges('basketContent:changed');
+
     }
 
     removeLot(id: string): void{
        this.basket = this.basket.filter((lot) => { lot.id !== id });
-       this.emitChanges('basketRemoveContent:changed');
+       this.emitChanges('basketContent:changed');
     }
 
 
@@ -78,6 +79,7 @@ export class AppState extends Model<IAppState> {
 
     setBasket(): IBasketItem[]{
         return this.basket;
+        console.log(this.basket);
     }
 
     checkBasket(item: IBasketItem): boolean {
