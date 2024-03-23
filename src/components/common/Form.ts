@@ -26,12 +26,16 @@ export class Form<T> extends View<IFormState> {
 
         this.container.addEventListener('submit', (e: Event) => {
             e.preventDefault();
+            console.log('сейчас');
+            console.log(this.container.name);
             this.events.emit(`${this.container.name}:submit`);
         });
     }
 
     protected onInputChange(field: keyof T, value: string) {
+        console.log(this.container.name);
         this.events.emit(`${this.container.name}.${String(field)}:change`, {
+            
             field,
             value
         });
@@ -42,6 +46,7 @@ export class Form<T> extends View<IFormState> {
     }
 
     set errors(value: string) {
+        console.log(this, this._errors, value);
         this.setText(this._errors, value);
     }
 

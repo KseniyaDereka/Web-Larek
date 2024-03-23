@@ -100,27 +100,29 @@ export class AppState extends Model<IAppState> {
 
 	setPayField(value: PaymentMethod): void {
 		this.order.payment = value;
-		this.checkValidation();
+		this.checkDeliveryValidation();
 	}
 
 	setAdressField(value: string): void {
 		this.order.address = value;
-		this.checkValidation();
+		this.checkDeliveryValidation();
 	}
 
-	setOrderFormField(
-		field: keyof Pick<IOrder, 'email' | 'phone'>,
-		value: string
-	): void {
+	setOrderFormField(field: keyof Pick<IOrder, 'email' | 'phone'>, value: string): void {
 		this.order[field] = value;
-		this.checkValidation();
+        console.log(this.validateContactsForm());
+		if (this.validateContactsForm()) {
+            this.events.emit('order:ready', this.order);
+        }
 	}
 
-	checkValidation(): void {
-		if (this.validateDeliveryForm() && this.validateContactsForm()) {
+
+    checkDeliveryValidation(): void {
+		if (this.validateDeliveryForm()) {
 			this.events.emit('order:ready', this.order);
 		}
 	}
+     
 
 	validateDeliveryForm(): boolean {
 		const errors: typeof this.formErrors = {};
