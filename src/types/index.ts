@@ -5,6 +5,8 @@ export interface ILotItem {
     title: string;
     category: string;
     price: number | null;
+    // state: boolean;
+    Button: boolean;
 }
 
 export type IBasketItem = Pick<ILotItem, 'id' | 'title' | 'price'> & {

@@ -33,12 +33,15 @@ export class Basket extends View<IBasketView> {
     set items(items: HTMLElement[]) {
         if (items.length) {
             this._list.replaceChildren(...items);
+                this._button.removeAttribute('disabled');
+               
             
         } else {
             this._list.replaceChildren(createElement<HTMLParagraphElement>('p', {
                 textContent: 'Тут так пусто...'
             }));
-            this.setDisabled(this._button, false);
+                this._button.setAttribute('disabled', '');
+            
         }
     }
 

@@ -10,14 +10,14 @@ export class BasketItem extends View<IBasketItem> {
 	protected _price: HTMLElement;
 	protected _button: HTMLButtonElement;
 	protected _index: HTMLElement;
-	protected _id: string
+	protected _id: string;
+	
 
-	constructor(index: number, protected blockName: string, container: HTMLElement, actions?: ICardActions) {
+	constructor(protected blockName: string, container: HTMLElement, actions?: ICardActions) {
 		super(container);
 		this._title = ensureElement<HTMLElement>(`.${blockName}__title`, container);
 		this._price = ensureElement<HTMLElement>(`.${blockName}__price`, container);
-		// this._index = ensureElement<HTMLElement>('basket__item-index', container);
-		//this._index = container.querySelector('basket__item-index');
+		this._index = ensureElement<HTMLElement>('.basket__item-index', container);
 		this._button = ensureElement<HTMLButtonElement>(`.${blockName}__button`, container);
 		this._button.addEventListener('click', actions.onClick);
 		
@@ -31,8 +31,8 @@ export class BasketItem extends View<IBasketItem> {
 		this.setText(this._price, value + ' синапсов');
 	}
 
-	set index(index: number) {
-		this.setText(this._index, index + 1);
+	set index(value: number) {
+		this.setText(this._index, value + 1);
 	
 	}
 	set id(value: string) {

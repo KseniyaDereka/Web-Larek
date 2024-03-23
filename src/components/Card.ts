@@ -59,8 +59,10 @@ export class Card extends View<ICard> {
 
     set price(value: number){
         if(value == null){
-        this.setText(this._price, 'Безценно');
-        this.setDisabled(this._button, false);
+        this.setText(this._price, 'Бесценно');
+        if(this._button){
+        this._button.setAttribute('disabled', '');
+        }
         } else {
             this.setText(this._price, value + ' синапсов');
 
@@ -68,8 +70,12 @@ export class Card extends View<ICard> {
     
     }
 
-    set button(value: string) { 
-        this.setText(this._button, value); 
-       }
+    set Button(state: boolean) { 
+        if(state){
+        this.setText(this._button, 'Убрать'); 
+        } else {
+        this.setText(this._button, 'В корзину');
+        }
+    }
 
 }

@@ -17,6 +17,7 @@ export class LotItem extends Model<ILotItem> {
     title: string;
     category: string;
     price: number | null;
+    Button: boolean
 }
 
 export class AppState extends Model<IAppState> {
@@ -30,11 +31,11 @@ export class AppState extends Model<IAppState> {
         total: 0,
         payment: 'card',
     };
-    preview: object;
+    preview: string;
     formErrors: FormErrors = {};
 
     setPreview(item: LotItem) {
-        this.preview = item;
+        this.preview = item.id;
         this.emitChanges('preview:changed', item);
     }
 
@@ -78,12 +79,17 @@ export class AppState extends Model<IAppState> {
     }
 
     setBasket(): IBasketItem[]{
-        return this.basket;
         console.log(this.basket);
+        return this.basket;
+        
+        
     }
 
     checkBasket(item: IBasketItem): boolean {
+        console.log(item);
+        console.log(this.basket);
         return this.basket.includes(item);
+        
     }
 
     setOrder(): void{
@@ -91,12 +97,15 @@ export class AppState extends Model<IAppState> {
        this.order.items = this.setBasket().map((item) => item.id);
     }
 
-    setOrderPayField(value: PaymentMethod):void{
+    setPayField(value: PaymentMethod):void{
         this.order.payment = value;
-        this.checkValidation();
     }
 
-    setOrderFormField(field: keyof Pick<IOrder, 'address'  | 'email' | 'phone'  >, value: string ):void{
+    setAdressField(value: string): void{
+        this.order.address = value;
+    }
+
+    setOrderFormField(field: keyof Pick<IOrder, 'email' | 'phone'  >, value: string ):void{
         this.order[field] = value;
         this.checkValidation();
     }
@@ -129,7 +138,7 @@ export class AppState extends Model<IAppState> {
             errors.phone = 'Необходимо указать телефон';
         }
         this.formErrors = errors;
-        this.events.emit('formErrors:change', this.formErrors);
+        this.events.emit('contactsErrors:change', this.formErrors);
         return Object.keys(errors).length === 0;
     }
 }
