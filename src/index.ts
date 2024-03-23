@@ -75,7 +75,7 @@ events.on('card:select', (item: LotItem) => {
 		const preview = new Card('card', cloneTemplate(cardPreviewTemplate), {
 			onClick: () => {
                 const check = appData.checkBasket(item);
-                console.log(check);
+                // console.log(check);
 				if (check) {
                      //если в корзине лежит карточка 
 					events.emit('lot:deleted', item); 
@@ -162,21 +162,11 @@ events.on('basketContent:changed', (item: BasketItem) => {
 
 
 //удалить лот из корзины по нажатию на иконку мусорки
-events.on('item:delete',(item: BasketItem) => {
+events.on('item:delete',(item: LotItem) => {
     appData.removeLot(item.id);
 } )
 
-//открыть окно с методом оплаты и адресом по нажатию на кнопку "Оформить"
-events.on('order:open', () => {
-    modal.render({
-        content: order.render({
-            payment: 'card',
-            address: '',
-            valid: false,
-            errors: []
-        })
-    });
-});
+
 
 
 //выбрать метод оплаты
@@ -209,7 +199,17 @@ events.on('contacts:open', () => {
 //     appData.setOrderFormField(data.field, data.value);
 // });
 
-
+//открыть окно с методом оплаты и адресом по нажатию на кнопку "Оформить"
+events.on('order:open', () => {
+    modal.render({
+        content: order.render({
+            payment: 'card',
+            address: '',
+            valid: false,
+            errors: []
+        })
+    });
+});
 
 // Изменилось состояние валидации формы оплаты и адреса
 events.on('deliveryErrors:change', (errors: Partial<IOrderForm>) => {

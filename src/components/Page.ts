@@ -25,7 +25,7 @@ export class Page extends View<IPage> {
 
         this._basket.addEventListener('click', () => {
             this.events.emit('basket:open');
-            console.log('click');
+            // console.log('click');
         });
     }
 

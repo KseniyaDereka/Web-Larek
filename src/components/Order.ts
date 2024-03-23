@@ -5,6 +5,7 @@ import {ensureElement} from "../utils/utils";
 
 export class Order extends Form<IOrderForm> {
     protected _buttons: HTMLButtonElement[];
+    protected _button: HTMLButtonElement[];
     
     constructor(container: HTMLFormElement, events: IEvents) {
         super(container, events);
@@ -13,6 +14,7 @@ export class Order extends Form<IOrderForm> {
        this.setPayment(button.name);
        events.emit('setPayment:changed', {name: button.name} )})})
 
+    //    this._button = container.querySelector('.order__button');
     }
 
     setPayment(name: string){
