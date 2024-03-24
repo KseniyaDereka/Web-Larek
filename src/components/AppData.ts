@@ -37,20 +37,13 @@ export class AppState extends Model<IAppState> {
 	preview: string;
 	formErrors: FormErrors = {};
 
-	setPreview(item: LotItem) {
-		this.preview = item.id;
-		this.emitChanges('preview:changed', item);
-	}
-
 	addLot(lot: IBasketItem): void {
 		this.basket.push(lot);
 		this.emitChanges('basketContent:changed');
 	}
 
 	removeLot(id: string): void {
-		// console.log(this.basket);
 		this.basket = this.basket.filter((lot) => lot.id !== id);
-		// console.log(this.basket);
 		this.emitChanges('basketContent:changed');
 	}
 
