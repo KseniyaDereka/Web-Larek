@@ -48,9 +48,9 @@ export class AppState extends Model<IAppState> {
 	}
 
 	removeLot(id: string): void {
-		console.log(this.basket);
+		// console.log(this.basket);
 		this.basket = this.basket.filter((lot) => lot.id !== id);
-		console.log(this.basket);
+		// console.log(this.basket);
 		this.emitChanges('basketContent:changed');
 	}
 
@@ -66,8 +66,8 @@ export class AppState extends Model<IAppState> {
 	}
 
 	clearBasket(): void {
-		this.basket.length == 0;
-		this.clearOrder();
+		this.basket.length = 0;
+		console.log('clearBasket: ' + this.basket);
 		this.emitChanges('basketContent:changed');
 	}
 
@@ -79,17 +79,14 @@ export class AppState extends Model<IAppState> {
 
 	setCatalog(items: LotItem[]): void {
 		this.catalog = items.map((item) => new LotItem(item, this.events));
-		this.emitChanges('items:changed', { catalog: this.catalog });
+		this.emitChanges('lots:show', { catalog: this.catalog });
 	}
 
 	setBasket(): IBasketItem[] {
-		// console.log(this.basket);
 		return this.basket;
 	}
 
 	checkBasket(item: IBasketItem): boolean {
-		// console.log(item);
-		// console.log(this.basket);
 		return this.basket.includes(item);
 	}
 
@@ -99,30 +96,31 @@ export class AppState extends Model<IAppState> {
 	}
 
 	setPayField(value: PaymentMethod): void {
+		console.log(value);
 		this.order.payment = value;
 		this.checkDeliveryValidation();
 	}
 
-	setAdressField(value: string): void {
+	setAddressField(value: string): void {
 		this.order.address = value;
 		this.checkDeliveryValidation();
 	}
 
-	setOrderFormField(field: keyof Pick<IOrder, 'email' | 'phone'>, value: string): void {
+	setOrderFormField(
+		field: keyof Pick<IOrder, 'email' | 'phone'>,
+		value: string
+	): void {
 		this.order[field] = value;
-        console.log(this.validateContactsForm());
 		if (this.validateContactsForm()) {
-            this.events.emit('order:ready', this.order);
-        }
+			this.events.emit('order:ready', this.order);
+		}
 	}
 
-
-    checkDeliveryValidation(): void {
+	checkDeliveryValidation(): void {
 		if (this.validateDeliveryForm()) {
 			this.events.emit('order:ready', this.order);
 		}
 	}
-     
 
 	validateDeliveryForm(): boolean {
 		const errors: typeof this.formErrors = {};
@@ -130,7 +128,7 @@ export class AppState extends Model<IAppState> {
 			errors.payment = 'Выберите метод оплаты';
 		}
 		if (!this.order.address) {
-			errors.phone = 'Необходимо указать адрес';
+			errors.address = 'Необходимо указать адрес';
 		}
 		this.formErrors = errors;
 		this.events.emit('deliveryErrors:change', this.formErrors);

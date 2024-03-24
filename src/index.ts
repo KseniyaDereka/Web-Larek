@@ -17,6 +17,7 @@ import { WebLarekAPI } from './components/WebLarekApi';
 
 const events = new EventEmitter();
 const api = new WebLarekAPI(CDN_URL, API_URL);
+const appData = new AppState({}, events); // Модель данных приложения
 
 // Чтобы мониторить все события, для отладки
 events.onAll(({ eventName, data }) => {
@@ -32,9 +33,6 @@ const orderTemplate = ensureElement<HTMLTemplateElement>('#order');
 const contactsTemplate = ensureElement<HTMLTemplateElement>('#contacts');
 const successTemplate = ensureElement<HTMLTemplateElement>('#success');
 
-// Модель данных приложения
-const appData = new AppState({}, events);
-
 // Глобальные контейнеры
 const page = new Page(document.body, events);
 const modal = new Popup(ensureElement<HTMLElement>('#modal-container'), events);
@@ -47,8 +45,9 @@ const contacts = new Contacts(cloneTemplate(contactsTemplate), events);
 // Дальше идет бизнес-логика
 // Поймали событие, сделали что нужно
 
-// Выводим галерею и устанавливаем каунтер
-events.on<CatalogChangeEvent>('items:changed', () => {
+//Главная страница
+// Выводим галерею
+events.on<CatalogChangeEvent>('lots:show', () => {
 	page.catalog = appData.catalog.map((item) => {
 		//для каждого обьекта товара из appdata создаем карточку
 		const card = new Card('card', cloneTemplate(cardCatalogTemplate), {
@@ -61,9 +60,15 @@ events.on<CatalogChangeEvent>('items:changed', () => {
 			category: item.category,
 		});
 	});
-
-	page.counter = appData.setBasket().length;
 });
+
+// Получаем карточки с сервера
+api
+	.getLotList()
+	.then(appData.setCatalog.bind(appData))
+	.catch((err) => {
+		console.error(err);
+	});
 
 // Открыть превью карточки
 events.on('card:select', (item: LotItem) => {
@@ -71,7 +76,6 @@ events.on('card:select', (item: LotItem) => {
 		const preview = new Card('card', cloneTemplate(cardPreviewTemplate), {
 			onClick: () => {
 				const check = appData.checkBasket(item);
-				// console.log(check);
 				if (check) {
 					//если в корзине лежит карточка
 					events.emit('lot:deleted', item);
@@ -79,7 +83,6 @@ events.on('card:select', (item: LotItem) => {
 					events.emit('lot:added', item);
 				}
 			},
-			// events.emit('basketContent:changed', item),
 		});
 		modal.render({
 			content: preview.render({
@@ -88,11 +91,12 @@ events.on('card:select', (item: LotItem) => {
 				description: item.description,
 				category: item.category,
 				price: item.price,
-				Button: appData.checkBasket(item),
+				Button: appData.checkBasket(item), //устанавливаем надпись на кнопке
 			}),
 		});
 	};
-	//получаем карточку для превью
+
+	//Получаем карточку для превью
 	api
 		.getLotItem(item.id)
 		.then((result) => {
@@ -103,34 +107,35 @@ events.on('card:select', (item: LotItem) => {
 		});
 });
 
-//добавить в корзину
+//Добавить лот в корзину
 events.on('lot:added', (item: LotItem) => {
 	appData.addLot(item);
 	modal.close();
 });
-//убрать из корзины
+
+//Корзина
+//Удалить лот из корзины по нажатию на иконку мусорки в корзине или по нажатию на кнопку убрать в превью карточки
 events.on('lot:deleted', (item: LotItem) => {
 	appData.removeLot(item.id);
 	modal.close();
 });
 
-//открыть корзину
-
+//Открыть корзину
 events.on('basket:open', () => {
 	modal.render({
 		content: createElement<HTMLElement>('div', {}, [basket.render()]),
 	});
 });
 
-events.on('basketContent:changed', (item: BasketItem) => {
-	page.counter = appData.setBasket().length;
+//Изменение корзины(удаление/добавление лотов, подсчет общей суммы, установка счетчика)
+events.on('basketContent:changed', () => {
 	basket.items = appData.setBasket().map((item, index) => {
 		const basketCard = new BasketItem(
 			'card',
 			cloneTemplate(cardBasketTemplate),
 			{
 				onClick: () => {
-					events.emit('item:delete', item);
+					events.emit('lot:deleted', item);
 				},
 			}
 		);
@@ -141,19 +146,10 @@ events.on('basketContent:changed', (item: BasketItem) => {
 		});
 	});
 	basket.total = appData.getTotal();
+	page.counter = appData.setBasket().length;
 });
 
-//удалить лот из корзины по нажатию на иконку мусорки
-events.on('item:delete', (item: LotItem) => {
-	appData.removeLot(item.id);
-});
-
-//выбрать метод оплаты
-events.on('setPayment:changed', (event: { name: PaymentMethod }) => {
-	appData.setPayField(event.name);
-});
-
-//открыть окно с методом оплаты и адресом по нажатию на кнопку "Оформить"
+//Открыть окно с методом оплаты и адресом по нажатию на кнопку "Оформить"
 events.on('order:open', () => {
 	modal.render({
 		content: order.render({
@@ -174,12 +170,17 @@ events.on('deliveryErrors:change', (errors: Partial<IOrderForm>) => {
 		.join('; ');
 });
 
-// Изменилось одно из полей
-events.on(/^order.address\..*:change/, (data: { value: string }) => {
-	appData.setAdressField(data.value);
+// Изменилось поле адрес
+events.on('order.address:change', (data: { value: string }) => {
+	appData.setAddressField(data.value);
 });
 
-//открыть форму контактов
+//Выбрать метод оплаты
+events.on('setPayment:changed', (event: { name: PaymentMethod }) => {
+	appData.setPayField(event.name);
+});
+
+//Открыть форму контактов
 events.on('order:submit', () => {
 	modal.render({
 		content: contacts.render({
@@ -191,35 +192,56 @@ events.on('order:submit', () => {
 	});
 });
 
-//Изменилось состояние валидации формы
+//Изменилось состояние валидации формы контактов
 events.on('contactsErrors:change', (errors: Partial<IOrderForm>) => {
 	const { email, phone } = errors;
-    console.log("hi");
 	contacts.valid = !email && !phone;
-    console.log(errors);
 	contacts.errors = Object.values(errors)
 		.filter((i) => !!i)
 		.join('; ');
-    console.log(contacts.errors);
-    console.log(Object.values(errors)
-    .filter((i) => !!i)
-    .join('; '));
-    
 });
 
-// Изменилось одно из полей
-events.on(/^contacts\.(email|phone):change/,(data: { field: keyof Pick<IOrderForm, 'email' | 'phone'>; value: string }) => {
+// Изменилось поле имейл или телефон
+events.on(
+	/^contacts\.(email|phone):change/,
+	(data: {
+		field: keyof Pick<IOrderForm, 'email' | 'phone'>;
+		value: string;
+	}) => {
 		appData.setOrderFormField(data.field, data.value);
 	}
 );
 
-// Получаем карточки с сервера
-api
-	.getLotList()
-	.then(appData.setCatalog.bind(appData))
-	.catch((err) => {
-		console.error(err);
-	});
+//Оформить заказ
+events.on('contacts:submit', () => {
+	appData.setOrder();
+	api
+		.orderLots(appData.order)
+		.then((result) => {
+			const success = new Success(
+				appData.getTotal(),
+				cloneTemplate(successTemplate),
+				{
+					onClick: () => {
+						modal.close();
+						appData.clearBasket();//очищаем корзину и заказ
+						appData.clearOrder();
+					},
+				}
+			);
+
+			modal.render({
+				content: success.render({}),
+			});
+		})
+		.catch((err) => {
+			console.error(err);
+		})
+
+		.finally(() => {
+			appData.clearOrder();
+		});
+});
 
 // Блокируем прокрутку страницы если открыта модалка
 events.on('modal:open', () => {
