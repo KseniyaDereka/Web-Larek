@@ -1,6 +1,7 @@
-import { ILotItem, category } from '../types';
+import { ILotItem } from '../types';
 import { View } from './base/View';
 import { ensureElement } from '../utils/utils';
+import { category } from '../utils/constants'
 
 interface ICardActions {
 	onClick: (event: MouseEvent) => void;

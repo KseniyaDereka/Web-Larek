@@ -37,6 +37,11 @@ export class AppState extends Model<IAppState> {
 	preview: string;
 	formErrors: FormErrors = {};
 
+	setPreview(item: ILotItem) {
+		this.preview = item.id;
+		this.emitChanges('preview:open', item);
+	}
+
 	addLot(lot: IBasketItem): void {
 		this.basket.push(lot);
 		this.emitChanges('basketContent:changed');

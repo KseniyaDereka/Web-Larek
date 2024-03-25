@@ -51,7 +51,7 @@ events.on<CatalogChangeEvent>('lots:show', () => {
 	page.catalog = appData.catalog.map((item) => {
 		//для каждого обьекта товара из appdata создаем карточку
 		const card = new Card('card', cloneTemplate(cardCatalogTemplate), {
-			onClick: () => events.emit('card:select', item),
+			onClick: () => events.emit('preview:set', item),
 		});
 		return card.render({
 			title: item.title,
@@ -70,9 +70,14 @@ api
 		console.error(err);
 	});
 
+
+//Присвоить айди нажатой карточки айди в каталоге
+events.on('preview:set', (item: LotItem) => {
+    appData.setPreview(item);
+} )
+
 // Открыть превью карточки
-events.on('card:select', (item: LotItem) => {
-	const showItem = (item: LotItem) => {
+events.on('preview:open', (item: LotItem) => {
 		const preview = new Card('card', cloneTemplate(cardPreviewTemplate), {
 			onClick: () => {
 				const check = appData.checkBasket(item);
@@ -93,17 +98,6 @@ events.on('card:select', (item: LotItem) => {
 				price: item.price,
 				Button: appData.checkBasket(item), //устанавливаем надпись на кнопке
 			}),
-		});
-	};
-
-	//Получаем карточку для превью
-	api
-		.getLotItem(item.id)
-		.then((result) => {
-			showItem(item);
-		})
-		.catch((err) => {
-			console.error(err);
 		});
 });
 
@@ -239,6 +233,7 @@ events.on('contacts:submit', () => {
 		})
 
 		.finally(() => {
+            appData.clearBasket()
 			appData.clearOrder();
 		});
 });

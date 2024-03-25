@@ -23,11 +23,12 @@ export interface IOrderForm {
     phone: string;
     address: string;
     payment: PaymentMethod;
-    total: number;
+    
 }
 
 export interface IOrder extends IOrderForm { 
     items: string[];
+    total: number;
 }
 
 export type PaymentMethod = 'cash' | 'card'
@@ -54,11 +55,3 @@ export type ApiListResponse<Type> = {
     items: Type[]
 };
 
-
-export const category: Record<string, string> =  {
-    "софт-скил": "_soft",
-    "другое": "_other",
-    "дополнительное": "_additional",
-    "кнопка": "_button",
-    "хард-скил": "_hard"
-}

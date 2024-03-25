@@ -2,13 +2,13 @@ import { ILotItem, IOrder,IOrderResult  } from '../types/index';
 import { ApiListResponse  }  from '../types/index';
 import {  Api }  from './base/api';
 
-export interface ILarekAPI {
+export interface IWebLarekAPI {
     getLotList: () => Promise<ILotItem[]>;
     getLotItem: (id: string) => Promise<ILotItem>;
     orderLots: (order: IOrder) => Promise<IOrderResult>;
 }
 
-export class WebLarekAPI extends Api implements ILarekAPI {
+export class WebLarekAPI extends Api implements IWebLarekAPI {
     readonly cdn: string;
 
     constructor(cdn: string, baseUrl: string, options?: RequestInit) {
