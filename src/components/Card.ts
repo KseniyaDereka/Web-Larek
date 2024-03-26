@@ -9,7 +9,9 @@ interface ICardActions {
 
 interface ICard extends ILotItem {
 	button?: string;
+	status: boolean
 }
+
 
 export class Card extends View<ICard> {
 	protected _description?: HTMLElement;
@@ -18,6 +20,7 @@ export class Card extends View<ICard> {
 	protected _category: HTMLElement;
 	protected _price: HTMLElement;
 	protected _button?: HTMLButtonElement;
+
 	constructor(protected blockName: string, container: HTMLElement, actions?: ICardActions) {
 		super(container);
 
@@ -63,8 +66,8 @@ export class Card extends View<ICard> {
 		}
 	}
 
-	set Button(state: boolean) {
-		if (state) {
+	set status(status: boolean) {
+		if (status) {
 			this.setText(this._button, 'Убрать');
 		} else {
 			this.setText(this._button, 'В корзину');

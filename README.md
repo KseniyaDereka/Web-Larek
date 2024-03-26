@@ -60,14 +60,13 @@ interface ILotItem {
     title: string;
     category: string;
     price: number | null;
-    Button: boolean;
 }
 ```
 
 Тип для товара в корзине.
 
 ```
-type BusketItem = Pick<LotItem, 'id' | 'title' | 'price'>& {index?: number;}
+type BusketItem = Pick<LotItem, 'id' | 'title' | 'price'> & {index?: number;}
 ```
 
 Интерфейс для данных отображенных в корзине, массив товаров и типы для данных заказа.

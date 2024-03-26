@@ -96,7 +96,7 @@ events.on('preview:open', (item: LotItem) => {
 				description: item.description,
 				category: item.category,
 				price: item.price,
-				Button: appData.checkBasket(item), //устанавливаем надпись на кнопке
+				status: appData.checkBasket(item), //устанавливаем надпись на кнопке
 			}),
 		});
 });
@@ -159,9 +159,11 @@ events.on('order:open', () => {
 events.on('deliveryErrors:change', (errors: Partial<IOrderForm>) => {
 	const { address, payment } = errors;
 	order.valid = !address && !payment;
+    console.log(order.valid);
 	order.errors = Object.values(errors)
 		.filter((i) => !!i)
 		.join('; ');
+        console.log(order.errors);
 });
 
 // Изменилось поле адрес
