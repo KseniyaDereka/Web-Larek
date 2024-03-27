@@ -9,7 +9,7 @@ import { cloneTemplate, createElement, ensureElement } from './utils/utils';
 import { Popup } from './components/common/Popup';
 import { Basket } from './components/common/Basket';
 import { BasketItem } from './components/BasketItem';
-import { IOrderForm, PaymentMethod } from './types';
+import { IOrderForm } from './types';
 import { Order } from './components/Order';
 import { Contacts } from './components/Contacts';
 import { Success } from './components/common/Success';
@@ -17,12 +17,7 @@ import { WebLarekAPI } from './components/WebLarekApi';
 
 const events = new EventEmitter();
 const api = new WebLarekAPI(CDN_URL, API_URL);
-const appData = new AppState({}, events); // Модель данных приложения
-
-// Чтобы мониторить все события, для отладки
-events.onAll(({ eventName, data }) => {
-	console.log(eventName, data);
-});
+const appData = new AppState({}, events); 
 
 // Все шаблоны
 const cardCatalogTemplate = ensureElement<HTMLTemplateElement>('#card-catalog');
@@ -145,9 +140,10 @@ events.on('basketContent:changed', () => {
 
 //Открыть окно с методом оплаты и адресом по нажатию на кнопку "Оформить"
 events.on('order:open', () => {
+    appData.clearOrder();
 	modal.render({
 		content: order.render({
-			payment: 'card',
+			payment: '',
 			address: '',
 			valid: false,
 			errors: [],
@@ -159,11 +155,9 @@ events.on('order:open', () => {
 events.on('deliveryErrors:change', (errors: Partial<IOrderForm>) => {
 	const { address, payment } = errors;
 	order.valid = !address && !payment;
-    console.log(order.valid);
 	order.errors = Object.values(errors)
 		.filter((i) => !!i)
 		.join('; ');
-        console.log(order.errors);
 });
 
 // Изменилось поле адрес
@@ -172,7 +166,7 @@ events.on('order.address:change', (data: { value: string }) => {
 });
 
 //Выбрать метод оплаты
-events.on('setPayment:changed', (event: { name: PaymentMethod }) => {
+events.on('setPayment:changed', (event: { name: string }) => {
 	appData.setPayField(event.name);
 });
 
@@ -204,7 +198,7 @@ events.on(
 		field: keyof Pick<IOrderForm, 'email' | 'phone'>;
 		value: string;
 	}) => {
-		appData.setOrderFormField(data.field, data.value);
+		appData.setContactsFormField(data.field, data.value);
 	}
 );
 

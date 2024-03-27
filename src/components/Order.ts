@@ -8,17 +8,17 @@ export class Order extends Form<IOrderForm> {
 
 	constructor(container: HTMLFormElement, events: IEvents) {
 		super(container, events);
+
 		this._buttons = Array.from(container.querySelectorAll('.button_alt'));
 		this._buttons.forEach((button) => {
 			button.addEventListener('click', () => {
-				this.setPayment(button.name);
+				this.payment = button.name;
 				events.emit('setPayment:changed', { name: button.name });
 			});
 		});
-		this.setPayment('card');
 	}
 
-	setPayment(name: string) {
+	set payment(name: string) {
 		this._buttons.forEach((button) => {
 			this.toggleClass(button, 'button_alt-active', button.name === name);
 		});

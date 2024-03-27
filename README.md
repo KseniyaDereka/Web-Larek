@@ -86,7 +86,7 @@ interface IOrderForm {
     email: string;
     phone: string;
     adress: string;
-    payment: PaymentMethod;
+    payment: string
     
 }
 ```
@@ -98,12 +98,6 @@ interface IOrder extends IOrderForm {
     items: string[];
     total: number;
 }
-```
-
-Тип для выбора метода оплаты.
-
-```
-type PaymentMethod = 'cash' | 'card'
 ```
 
 Интерфейс для попапа "Заказ оформлен".

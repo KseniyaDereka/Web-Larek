@@ -4,7 +4,6 @@ import {
 	IOrder,
 	FormErrors,
 	IAppState,
-	PaymentMethod,
 	IBasketItem,
 } from '../types/index';
 import { IEvents } from './base/events';
@@ -20,7 +19,6 @@ export class LotItem extends Model<ILotItem> {
 	title: string;
 	category: string;
 	price: number | null;
-	Button: boolean;
 }
 
 export class AppState extends Model<IAppState> {
@@ -32,7 +30,7 @@ export class AppState extends Model<IAppState> {
 		address: '',
 		items: [],
 		total: 0,
-		payment: 'card',
+		payment: '',
 	};
 	preview: string;
 	formErrors: FormErrors = {};
@@ -59,13 +57,12 @@ export class AppState extends Model<IAppState> {
 			address: '',
 			items: [],
 			total: 0,
-			payment: 'card',
+			payment: '',
 		};
 	}
 
 	clearBasket(): void {
 		this.basket.length = 0;
-		console.log('clearBasket: ' + this.basket);
 		this.emitChanges('basketContent:changed');
 	}
 
@@ -93,8 +90,7 @@ export class AppState extends Model<IAppState> {
 		this.order.items = this.setBasket().map((item) => item.id);
 	}
 
-	setPayField(value: PaymentMethod): void {
-		console.log(value);
+	setPayField(value: string): void {
 		this.order.payment = value;
 		this.checkDeliveryValidation();
 	}
@@ -104,10 +100,7 @@ export class AppState extends Model<IAppState> {
 		this.checkDeliveryValidation();
 	}
 
-	setOrderFormField(
-		field: keyof Pick<IOrder, 'email' | 'phone'>,
-		value: string
-	): void {
+	setContactsFormField(field: keyof Pick<IOrder, 'email' | 'phone'>, value: string): void {
 		this.order[field] = value;
 		if (this.validateContactsForm()) {
 			this.events.emit('order:ready', this.order);
@@ -115,7 +108,8 @@ export class AppState extends Model<IAppState> {
 	}
 
 	checkDeliveryValidation(): void {
-		if (this.validateDeliveryForm()) {
+		const valid = this.validateDeliveryForm();
+		if (valid) {
 			this.events.emit('order:ready', this.order);
 		}
 	}

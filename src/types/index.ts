@@ -21,7 +21,7 @@ export interface IOrderForm {
     email: string;
     phone: string;
     address: string;
-    payment: PaymentMethod;
+    payment: string;
     
 }
 
@@ -29,9 +29,6 @@ export interface IOrder extends IOrderForm {
     items: string[];
     total: number;
 }
-
-export type PaymentMethod = 'cash' | 'card'
-
 
 export interface IOrderResult {
     id: string;
